@@ -21,7 +21,7 @@ const Counter = sequelize.define("Counter", {
 });
 
 // 数据库初始化方法
-async function init() {
+async function init () {
   await Counter.sync({ alter: true });
 }
 

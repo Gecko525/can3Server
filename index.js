@@ -4,7 +4,14 @@ const logger = require("koa-logger");
 const bodyParser = require("koa-bodyparser");
 const fs = require("fs");
 const crypto = require('crypto');
+const dotenv = require('dotenv');
 const path = require("path");
+
+const { NODE_ENV } = process.env;
+if (NODE_ENV === 'development') {
+  dotenv.config();
+}
+
 const { init: initDB, Counter } = require("./db");
 
 const router = new Router();
@@ -18,14 +25,14 @@ router.get("/", async (ctx) => {
 
 // token验证
 router.get("/wx", async (ctx) => {
-  const { signature, timestamp, nonce, echostr } = ctx.request.body;
+  const { signature, timestamp, nonce, echostr } = ctx.request.query;
   const token = 'cans';
 
   const list = [token, timestamp, nonce];
   list.sort();
   const sha1 = crypto.createHash('sha1');
   sha1.update(list.join(''))
-  const hashcode = sha1.digest();
+  const hashcode = sha1.digest('hex');
   ctx.body = hashcode === signature ? echostr : '';
 })
 
