@@ -12,7 +12,7 @@ module.exports = function (xml) {
   const msgtype = MsgType[0];
   if (msgtype === MSGTYPE.EVENT) {
     const event = Event[0];
-    if (event = EVENTTYPE.SUBSCRIBE) {
+    if (event === EVENTTYPE.SUBSCRIBE) {
       return '谢谢你长得这么好看还来关注我';
     }
   }
