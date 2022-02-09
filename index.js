@@ -7,6 +7,8 @@ const fs = require("fs");
 const crypto = require('crypto');
 const dotenv = require('dotenv');
 const path = require("path");
+const createMsg = require('./createMsg');
+const resolveUserMsg = require('./resolveUserMsg');
 
 const { NODE_ENV } = process.env;
 if (NODE_ENV === 'development') {
@@ -27,7 +29,7 @@ router.get("/", async (ctx) => {
 // token验证
 router.get("/wx", async (ctx) => {
   const { signature, timestamp, nonce, echostr } = ctx.request.query;
-  const token = 'cans';
+  const token = 'can3Server';
 
   const list = [token, timestamp, nonce];
   list.sort();
@@ -41,16 +43,15 @@ router.post("/wx", async (ctx) => {
   console.log(ctx.request.body);
   const xml = ctx.request.body.xml;
   if (!xml) ctx.body = 'success';
-  const { ToUserName, FromUserName, MsgType, Content, MsgId } = xml;
-  ctx.body = `
-  <xml>
-    <ToUserName><![CDATA[${FromUserName}]]></ToUserName>
-    <FromUserName><![CDATA[${ToUserName}]]></FromUserName>
-    <CreateTime>${Date.now()}</CreateTime>
-    <MsgType><![CDATA[text]]></MsgType>
-    <Content><![CDATA[你好，我是小易！]]></Content>
-  </xml>
-  `;
+  const { ToUserName, FromUserName } = xml;
+  const res = resolveUserMsg(xml);
+  const resXml = {
+    ToUserName: FromUserName,
+    FromUserName: ToUserName,
+    MsgType: typeof res === 'string' ? 'text' : res.MsgType,
+    Content: typeof res === 'string' ? res : res.Content
+  }
+  ctx.body = createMsg(resXml);
 })
 
 // 更新计数
