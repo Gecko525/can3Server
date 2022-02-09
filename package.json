@@ -23,6 +23,8 @@
     "koa-router": "^10.1.1",
     "koa-xml-body": "^2.2.0",
     "mysql2": "^2.3.3",
+    "request": "^2.88.2",
+    "request-promise": "^4.2.6",
     "sequelize": "^6.13.0"
   }
 }

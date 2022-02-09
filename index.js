@@ -7,8 +7,10 @@ const fs = require("fs");
 const crypto = require('crypto');
 const dotenv = require('dotenv');
 const path = require("path");
+const rp = require('request-promise');
 const createMsg = require('./createMsg');
 const resolveUserMsg = require('./resolveUserMsg');
+const getAccessToken = require('./getAccessToken');
 
 const { NODE_ENV } = process.env;
 if (NODE_ENV === 'development') {
@@ -19,10 +21,9 @@ const { init: initDB, Counter } = require("./db");
 
 const router = new Router();
 
-const homePage = fs.readFileSync(path.join(__dirname, "index.html"), "utf-8");
-
 // 首页
 router.get("/", async (ctx) => {
+  const homePage = fs.readFileSync(path.join(__dirname, "index.html"), "utf-8");
   ctx.body = homePage;
 });
 
@@ -79,6 +80,48 @@ router.get("/api/count", async (ctx) => {
   ctx.body = {
     code: 0,
     data: result,
+  };
+});
+
+// 更新菜单
+router.post('/api/menu', async (ctx) => {
+  const { content } = ctx.request.body;
+  const access_token = await getAccessToken();
+  const res = await rp({
+    method: 'POST',
+    uri: 'https://api.weixin.qq.com/cgi-bin/menu/create',
+    qs: { access_token },
+    body: JSON.parse(content),
+    json: true
+  });
+  console.log(res);
+  ctx.body = {
+    code: res.errcode,
+    messge: res.errmsg
+  };
+})
+
+// 获取菜单
+router.get("/api/menu", async (ctx) => {
+  const access_token = await getAccessToken();
+  const res = await rp({
+    method: 'GET',
+    uri: 'https://api.weixin.qq.com/cgi-bin/get_current_selfmenu_info',
+    qs: { access_token },
+    json: true
+  });
+  console.log(res);
+  if (res.errcode !== 0) {
+    ctx.body = {
+      code: res.errcode,
+      message: res.errmsg
+    };
+    return;
+  }
+  ctx.body = {
+    code: 0,
+    message: 'ok',
+    data: res.selfmenu_info
   };
 });
 

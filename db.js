@@ -20,13 +20,26 @@ const Counter = sequelize.define("Counter", {
   },
 });
 
+const Token = sequelize.define('Token', {
+  token: {
+    type: DataTypes.STRING,
+    allowNull: true,
+  },
+  expires: {
+    type: DataTypes.INTEGER,
+    allowNull: true
+  }
+})
+
 // 数据库初始化方法
 async function init () {
   await Counter.sync({ alter: true });
+  await Token.sync({ alter: true });
 }
 
 // 导出初始化方法和模型
 module.exports = {
   init,
   Counter,
+  Token
 };
