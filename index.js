@@ -38,7 +38,15 @@ router.get("/wx", async (ctx) => {
 
 router.post("/wx", async (ctx) => {
   console.log(ctx.request.body);
-  ctx.body = '这个小易还没学会呢，换一个问题吧';
+  ctx.body = `
+  <xml>
+    <ToUserName><![CDATA[toUser]]></ToUserName>
+    <FromUserName><![CDATA[fromUser]]></FromUserName>
+    <CreateTime>12345678</CreateTime>
+    <MsgType><![CDATA[text]]></MsgType>
+    <Content><![CDATA[你好，我是小易！]]></Content>
+  </xml>
+  `;
 })
 
 // 更新计数
