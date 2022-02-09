@@ -2,6 +2,7 @@ const Koa = require("koa");
 const Router = require("koa-router");
 const logger = require("koa-logger");
 const bodyParser = require("koa-bodyparser");
+const xmlParser = require('koa-xml-body');
 const fs = require("fs");
 const crypto = require('crypto');
 const dotenv = require('dotenv');
@@ -38,11 +39,14 @@ router.get("/wx", async (ctx) => {
 
 router.post("/wx", async (ctx) => {
   console.log(ctx.request.body);
+  const xml = ctx.request.body.xml;
+  if (!xml) ctx.body = 'success';
+  const { ToUserName, FromUserName, MsgType, Content, MsgId } = xml;
   ctx.body = `
   <xml>
-    <ToUserName><![CDATA[toUser]]></ToUserName>
-    <FromUserName><![CDATA[fromUser]]></FromUserName>
-    <CreateTime>12345678</CreateTime>
+    <ToUserName><![CDATA[${FromUserName}]]></ToUserName>
+    <FromUserName><![CDATA[${ToUserName}]]></FromUserName>
+    <CreateTime>${Date.now()}</CreateTime>
     <MsgType><![CDATA[text]]></MsgType>
     <Content><![CDATA[你好，我是小易！]]></Content>
   </xml>
@@ -87,6 +91,7 @@ router.get("/api/wx_openid", async (ctx) => {
 const app = new Koa();
 app
   .use(logger())
+  .use(xmlParser())
   .use(bodyParser())
   .use(router.routes())
   .use(router.allowedMethods());
