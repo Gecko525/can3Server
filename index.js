@@ -36,6 +36,11 @@ router.get("/wx", async (ctx) => {
   ctx.body = hashcode === signature ? echostr : '';
 })
 
+router.post("/wx", async (ctx) => {
+  console.log(ctx.request.body);
+  ctx.body = '这个小易还没学会呢，换一个问题吧';
+})
+
 // 更新计数
 router.post("/api/count", async (ctx) => {
   const { request } = ctx;
