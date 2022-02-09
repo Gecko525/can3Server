@@ -20,7 +20,7 @@ module.exports = function (xml) {
   if (msgtype === MSGTYPE.TEXT) {
     const content = Content[0];
     if (/love|爱你/.test(content)) {
-      return '我也爱你，么么哒';
+      return '我也爱你，么么哒 /:rose';
     }
     return '你好，我是小易';
   }
