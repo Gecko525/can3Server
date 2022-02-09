@@ -13,7 +13,7 @@ module.exports = function (xml) {
   if (msgtype === MSGTYPE.EVENT) {
     const event = Event[0];
     if (event === EVENTTYPE.SUBSCRIBE) {
-      return '谢谢你长得这么好看还来关注我';
+      return '谢谢你长得这么好看还来关注我 /:rose';
     }
   }
 
